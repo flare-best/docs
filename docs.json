@@ -75,25 +75,15 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "endpoint/introduction",
-              "endpoint/api-key"
-            ]
+            "pages": []
           },
           {
             "group": "Lookup Endpoints",
-            "pages": [
-              "endpoint/lookup/username",
-              "endpoint/lookup/uid"
-            ]
+            "pages": []
           },
           {
             "group": "Leaderboard Endpoints",
-            "pages": [
-              "endpoint/leaderboard/views",
-              "endpoint/leaderboard/badges",
-              "endpoint/leaderboard/uid"
-            ]
+            "pages": []
           },
           {
             "group": "ImageHost Endpoints",
