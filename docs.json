@@ -68,27 +68,6 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "API Endpoints",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": []
-          },
-          {
-            "group": "Lookup Endpoints",
-            "pages": []
-          },
-          {
-            "group": "Leaderboard Endpoints",
-            "pages": []
-          },
-          {
-            "group": "ImageHost Endpoints",
-            "pages": []
-          }
-        ]
       }
     ]
   },
