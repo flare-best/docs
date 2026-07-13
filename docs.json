@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "almond",
-  "name": "Haunt.gg Documentation",
+  "name": "flare.best Documentation",
   "colors": {
-    "primary": "#F27DB3",
-    "light": "#F38ABA",
-    "dark": "#D970A1"
+    "primary": "#86e0dd",
+    "light": "#86e0dd",
+    "dark": "#86e0dd"
   },
   "banner": {
   "content": "⚠ This documentation may contain outdated content, as it is no longer being updated. Haunt V2 will release soon with new documentation. Stay tuned, and join our [Discord server](https://discord.gg/hauntbio) for updates.",
