@@ -23,7 +23,6 @@
               "overview/introduction",
               "overview/changelog",
               "overview/faq",
-              "overview/products",
               "overview/register"
             ]
           },
@@ -66,7 +65,6 @@
             "pages": [
               "troubleshooting/assets",
               "troubleshooting/discord",
-              "troubleshooting/instagram",
               "troubleshooting/login"
             ]
           }
