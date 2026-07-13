@@ -1,0 +1,61 @@
+---
+title: API Key Management
+sidebarTitle: API Key Management
+description: Manage your Haunt.gg API keys.
+icon: key
+iconType: duotone
+---
+
+Haunt.gg uses two types of API keys depending on the endpoint you want to access.
+
+## Key Types
+
+### Account API Key
+Your Account API key is used for all endpoints except image uploads. It can be passed in two ways:
+
+- **Query parameter:** `?key=YOUR_ACCOUNT_API_KEY`
+- **Bearer token:** `Authorization: Bearer YOUR_ACCOUNT_API_KEY`
+
+Each key comes with the following permissions:
+- `imagehost.gallery`
+- `imagehost.folders`
+- `lookup` <Badge icon="lock" color="yellow"><Tooltip headline="Restricted Permissions" tip="These permissions have to be requested via application." cta="Learn more" href="/endpoint/api-key#restricted-permissions">Restricted</Tooltip></Badge>
+- `leaderboard` <Badge icon="lock" color="yellow"><Tooltip headline="Restricted Permissions" tip="These permissions have to be requested via application." cta="Learn more" href="/endpoint/api-key#restricted-permissions">Restricted</Tooltip></Badge>
+
+### ImageHost API Key
+Your ImageHost API key is used exclusively for the `/imagehost/upload` endpoint. It is passed as a `key` field in the multipart form data of the upload request.
+
+---
+
+## Accessing Your API Keys
+<Steps>
+  <Step title="Open your account setting">
+    Visit your [account settings](https://haunt.gg/dashboard/settings) in your dashboard and scroll to **API Keys**.
+
+    <Frame>
+        ![API Key Settings](../assets/images/api-key-01.png)
+    </Frame>
+    </Step>
+    <Step title="Manage Keys">
+    From there you can create new API keys, view existing keys, and revoke keys that are no longer needed.
+
+    <Warning>
+        After creating a new API key, make sure to copy and store it securely as it will not be shown again.
+    </Warning>
+    </Step>
+</Steps>
+
+---
+
+## Restricted Permissions
+Restricted permissions are:
+- `lookup`
+- `leaderboard`
+
+These permissions have to be requested via application.
+
+To apply for those permissions, use the **Request** button in the API key settings.
+
+<Frame>
+    ![Request Permissions](../assets/images/api-key-02.png)
+</Frame>

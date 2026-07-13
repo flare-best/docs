@@ -1,0 +1,1740 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Look up & Leaderboard API",
+    "description": "API for user look ups, leaderboard functionality, and image hosting",
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://haunt.gg/api"
+    }
+  ],
+  "security": [
+    {
+      "accountApiKey": []
+    },
+    {
+      "accountBearerAuth": []
+    }
+  ],
+  "paths": {
+    "/lookup/username/{username}": {
+      "get": {
+        "description": "Retrieve user information by username",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "The username to look up",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lookup/uid/{uid}": {
+      "get": {
+        "description": "Retrieve user information by user ID",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "description": "The user ID to look up",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/imagehost/upload": {
+      "post": {
+        "summary": "ImageHost Upload",
+        "description": "Upload an image file to the image hosting service. Requires your ImageHost API key which can be found in your dashboard.",
+        "security": [
+          {
+            "imagehostApiKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["key", "file"],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "description": "Your ImageHost API key (found in your dashboard)"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The image file to upload"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Image uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostResponse"
+                },
+                "example": {
+                  "status": "success",
+                  "url": "https://carti.pics/v82AUOld",
+                  "rawUrl": "https://images.haunt.gg/v82AUOld.jpg",
+                  "data": {
+                    "file": "v82AUOld.jpg",
+                    "fileName": "v82AUOld",
+                    "fileExtension": "jpg",
+                    "fileSize": 13002,
+                    "fileOriginal": "v82AUOld.jpg",
+                    "fileWidth": 735,
+                    "fileHeight": 245
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid file or missing parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                },
+                "example": {
+                  "status": "failed",
+                  "message": "Invalid file format"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                },
+                "example": {
+                  "status": "failed",
+                  "message": "Invalid API key"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "File too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                },
+                "example": {
+                  "status": "failed",
+                  "message": "File size exceeds limit"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leaderboard/views": {
+      "get": {
+        "description": "Get the views leaderboard",
+        "responses": {
+          "200": {
+            "description": "Views leaderboard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeaderboardEntry"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leaderboard/badges": {
+      "get": {
+        "description": "Get the badges leaderboard",
+        "responses": {
+          "200": {
+            "description": "Badges leaderboard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeaderboardEntry"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leaderboard/uid": {
+      "get": {
+        "description": "Get the UID leaderboard",
+        "responses": {
+          "200": {
+            "description": "UID leaderboard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeaderboardEntry"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/imagehost/gallery": {
+      "get": {
+        "summary": "ImageHost Gallery",
+        "description": "Retrieve a paginated list of all uploaded images. Requires your Account API key.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of files to return (max 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of files to skip",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gallery files retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GalleryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/imagehost/folders": {
+      "get": {
+        "summary": "List Folders",
+        "description": "Retrieve a list of all folders with file counts and total sizes. Requires your Account API key.",
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoldersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Folder",
+        "description": "Create a new folder. Requires your Account API key.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["folderName"],
+                "properties": {
+                  "folderName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 32,
+                    "description": "Folder name (must be unique per user)"
+                  },
+                  "folderPublic": {
+                    "type": "boolean",
+                    "description": "Whether the folder is publicly accessible (defaults to false)"
+                  },
+                  "folderPasswordEnabled": {
+                    "type": "boolean",
+                    "description": "Whether the folder requires a password (only for public folders)"
+                  },
+                  "folderPassword": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "description": "Folder password (required if folderPasswordEnabled is true)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "folder": {
+                      "$ref": "#/components/schemas/FolderWithStats"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - folder limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - folder name already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/imagehost/folders/{id}": {
+      "get": {
+        "summary": "Get Folder",
+        "description": "Retrieve a specific folder with its files. Requires your Account API key.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The folder ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of files to return (max 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of files to skip",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Folder",
+        "description": "Update folder properties such as name, visibility, or password. Requires your Account API key.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The folder ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "folderName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 32,
+                    "description": "New folder name (must be unique per user)"
+                  },
+                  "folderPublic": {
+                    "type": "boolean",
+                    "description": "Whether the folder is publicly accessible"
+                  },
+                  "folderPasswordEnabled": {
+                    "type": "boolean",
+                    "description": "Whether the folder requires a password"
+                  },
+                  "folderPassword": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "description": "Folder password (hashed before storage)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [true]
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Folder updated successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - folder name already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Folder",
+        "description": "Delete a folder. Files in the folder are not deleted. Requires your Account API key.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The folder ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [true]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageHostErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ImageHostResponse": {
+        "type": "object",
+        "required": ["status", "url", "rawUrl", "data"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Response status"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the uploaded image",
+            "example": "https://carti.pics/v82AUOld"
+          },
+          "rawUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Raw URL of the uploaded image without any modifications",
+            "example": "https://images.haunt.gg/v82AUOld.jpg"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string",
+                "format": "string",
+                "description": "Uploaded image filename with extension"
+              },
+              "fileName": {
+                "type": "string",
+                "format": "string",
+                "description": "Uploaded image filename"
+              },
+              "fileExtension": {
+                "type": "string",
+                "format": "string",
+                "description": "Uploaded image file extension"
+              },
+              "fileSize": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Uploaded image file size in bytes"
+              },
+              "fileOriginal": {
+                "type": "string",
+                "format": "string",
+                "description": "Uploaded image file original name"
+              },
+              "fileWidth": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Uploaded image file width in pixels"
+              },
+              "fileHeight": {
+                "type": "integer",
+                "format": "int64",
+                "description": "Uploaded image file height in pixels"
+              }
+            }
+          }
+        }
+      },
+      "GalleryFile": {
+        "type": "object",
+        "required": ["id", "fileName", "fileExtension", "fileSize", "fileOriginal", "uploadAt", "favorite"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "File identifier"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "File name without extension"
+          },
+          "fileExtension": {
+            "type": "string",
+            "description": "File extension"
+          },
+          "fileSize": {
+            "type": "integer",
+            "description": "File size in bytes"
+          },
+          "fileOriginal": {
+            "type": "string",
+            "description": "Original file name"
+          },
+          "uploadAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp of upload"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Whether the file is favorited"
+          },
+          "folder": {
+            "nullable": true,
+            "$ref": "#/components/schemas/Folder"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": ["id", "folderName", "folderPublic", "folderPasswordEnabled", "createdAt", "updatedAt"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Folder identifier"
+          },
+          "folderName": {
+            "type": "string",
+            "description": "Folder name"
+          },
+          "folderPublic": {
+            "type": "boolean",
+            "description": "Whether the folder is publicly accessible"
+          },
+          "folderPasswordEnabled": {
+            "type": "boolean",
+            "description": "Whether the folder requires a password"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp of folder creation"
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp of last update"
+          }
+        }
+      },
+      "FolderWithStats": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Folder" },
+          {
+            "type": "object",
+            "properties": {
+              "fileCount": {
+                "type": "integer",
+                "description": "Number of files in the folder"
+              },
+              "totalSize": {
+                "type": "integer",
+                "description": "Total size of all files in bytes"
+              }
+            }
+          }
+        ]
+      },
+      "GalleryResponse": {
+        "type": "object",
+        "required": ["files", "total"],
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GalleryFile"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of files"
+          },
+          "limit": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Applied limit"
+          },
+          "offset": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Applied offset"
+          }
+        }
+      },
+      "FoldersResponse": {
+        "type": "object",
+        "required": ["folders", "total"],
+        "properties": {
+          "folders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolderWithStats"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of folders"
+          }
+        }
+      },
+      "FolderDetailFile": {
+        "allOf": [
+          { "$ref": "#/components/schemas/GalleryFile" },
+          {
+            "type": "object",
+            "properties": {
+              "fileWidth": {
+                "type": "integer",
+                "nullable": true,
+                "description": "File width in pixels"
+              },
+              "fileHeight": {
+                "type": "integer",
+                "nullable": true,
+                "description": "File height in pixels"
+              }
+            }
+          }
+        ]
+      },
+      "FolderDetailResponse": {
+        "type": "object",
+        "required": ["folder", "files", "total"],
+        "properties": {
+          "folder": {
+            "$ref": "#/components/schemas/Folder"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolderDetailFile"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of files in the folder"
+          },
+          "limit": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Applied limit"
+          },
+          "offset": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Applied offset"
+          }
+        }
+      },
+      "ImageHostErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["failed"],
+            "description": "Response status"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Invalid API key"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "username"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "User UID"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username"
+          },
+          "alias": {
+            "type": "object",
+            "nullable": true,
+            "description": "User alias configuration"
+          },
+          "displayUsername": {
+            "type": "string",
+            "nullable": true,
+            "description": "Display username"
+          },
+          "banned": {
+            "type": "boolean",
+            "description": "Whether the user is banned"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "UNIX timestamp of account creation"
+          },
+          "discordId": {
+            "type": "string",
+            "description": "Discord user ID"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/UserProfile"
+          },
+          "badges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Badge"
+            },
+            "description": "User badges"
+          },
+          "customBadges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomBadge"
+            },
+            "description": "Custom user badges"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            },
+            "description": "User social links"
+          },
+          "audios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Audio"
+            },
+            "description": "User audio tracks"
+          },
+          "backgrounds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Background"
+            },
+            "description": "User background media"
+          },
+          "viewCount": {
+            "type": "integer",
+            "description": "Total profile views"
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri",
+            "description": "Avatar URL"
+          },
+          "theme": {
+            "type": "string",
+            "description": "Profile theme"
+          },
+          "banner": {
+            "type": "string",
+            "format": "uri",
+            "description": "Banner image URL"
+          },
+          "backgroundEffect": {
+            "type": "string",
+            "description": "Background effects as a JSON string"
+          },
+          "backgroundEffectSettings": {
+            "type": "object",
+            "description": "Background effect settings"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Profile description"
+          },
+          "aboutMe": {
+            "type": "string",
+            "nullable": true,
+            "description": "About me content"
+          },
+          "aboutMeTitle": {
+            "type": "string",
+            "nullable": true,
+            "description": "About me title"
+          },
+          "aboutMeDescription": {
+            "type": "string",
+            "nullable": true,
+            "description": "About me description"
+          },
+          "aboutMeEnabled": {
+            "type": "boolean",
+            "description": "Enable about me section"
+          },
+          "aboutMeCustomization": {
+            "type": "boolean",
+            "description": "Enable about me customization"
+          },
+          "aboutMeAccentColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "About me accent color"
+          },
+          "aboutMeTextColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "About me text color"
+          },
+          "aboutMeOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "About me opacity"
+          },
+          "aboutMeBorderCustomization": {
+            "type": "boolean",
+            "description": "Enable about me border customization"
+          },
+          "aboutMeBorderColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "About me border color"
+          },
+          "aboutMeBorderWidth": {
+            "type": "integer",
+            "nullable": true,
+            "description": "About me border width"
+          },
+          "aboutMeBorderRadius": {
+            "type": "integer",
+            "nullable": true,
+            "description": "About me border radius"
+          },
+          "aboutMeBorderOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "About me border opacity"
+          },
+          "discordPresence": {
+            "type": "boolean",
+            "description": "Show Discord presence"
+          },
+          "discordPresenceLeft": {
+            "type": "string",
+            "nullable": true,
+            "description": "Discord presence left side"
+          },
+          "discordPresenceRight": {
+            "type": "string",
+            "nullable": true,
+            "description": "Discord presence right side"
+          },
+          "discordPresenceStatus": {
+            "type": "boolean",
+            "description": "Show Discord status"
+          },
+          "discordPresenceDecoration": {
+            "type": "boolean",
+            "description": "Show Discord decorations"
+          },
+          "discordPresenceClan": {
+            "type": "boolean",
+            "description": "Show Discord clan"
+          },
+          "discordPresenceBadges": {
+            "type": "boolean",
+            "description": "Show Discord badges"
+          },
+          "discordPresenceImage": {
+            "type": "boolean",
+            "description": "Show Discord image"
+          },
+          "discordPresenceDetails": {
+            "type": "boolean",
+            "description": "Show Discord details"
+          },
+          "presenceCustomization": {
+            "type": "boolean",
+            "description": "Enable presence customization"
+          },
+          "presenceAccentColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Presence accent color"
+          },
+          "presenceOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Presence opacity"
+          },
+          "presenceBorderCustomization": {
+            "type": "boolean",
+            "description": "Enable presence border customization"
+          },
+          "presenceBorderColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Presence border color"
+          },
+          "presenceBorderWidth": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Presence border width"
+          },
+          "presenceBorderRadius": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Presence border radius"
+          },
+          "presenceBorderOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Presence border opacity"
+          },
+          "alias": {
+            "type": "string",
+            "description": "Profile alias"
+          },
+          "aliasRedirect": {
+            "type": "boolean",
+            "description": "Enable alias redirect"
+          },
+          "profileTitle": {
+            "type": "string",
+            "description": "Profile title"
+          },
+          "profileDescription": {
+            "type": "string",
+            "description": "Profile description"
+          },
+          "profileFavicon": {
+            "type": "string",
+            "format": "uri",
+            "description": "Profile favicon URL"
+          },
+          "profileColor": {
+            "type": "string",
+            "description": "Profile color hex code"
+          },
+          "profileBanner": {
+            "type": "string",
+            "format": "uri",
+            "description": "Profile banner URL"
+          },
+          "profileAvatarEnabled": {
+            "type": "boolean",
+            "description": "Enable profile avatar"
+          },
+          "profileUsernameEnabled": {
+            "type": "boolean",
+            "description": "Enable profile username"
+          },
+          "profileLinkEnabled": {
+            "type": "boolean",
+            "description": "Enable profile link"
+          },
+          "profileAnimation": {
+            "type": "string",
+            "nullable": true,
+            "description": "Profile animation type"
+          },
+          "profileEnterAnimation": {
+            "type": "string",
+            "nullable": true,
+            "description": "Profile enter animation type"
+          },
+          "profileSoundEffect": {
+            "type": "string",
+            "nullable": true,
+            "description": "Profile sound effect"
+          },
+          "typewriterDescriptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Typewriter effect descriptions"
+          },
+          "typewriterEnabled": {
+            "type": "boolean",
+            "description": "Enable typewriter effect"
+          },
+          "typewriterSpeed": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Typewriter speed"
+          },
+          "typewriterDeleteSpeed": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Typewriter delete speed"
+          },
+          "typewriterDelay": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Typewriter delay"
+          },
+          "cursorEffect": {
+            "type": "string",
+            "description": "Cursor effect type"
+          },
+          "cursorEffectEnabled": {
+            "type": "boolean",
+            "description": "Enable cursor effect"
+          },
+          "cursorEffectColor": {
+            "type": "string",
+            "description": "Cursor effect color"
+          },
+          "font": {
+            "type": "string",
+            "description": "Font family"
+          },
+          "fontCustom": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "description": "Custom font URL"
+          },
+          "badgeGlowStrength": {
+            "type": "integer",
+            "description": "Badge glow strength"
+          },
+          "iconGlowStrength": {
+            "type": "integer",
+            "description": "Icon glow strength"
+          },
+          "textGlowStrength": {
+            "type": "integer",
+            "description": "Text glow strength"
+          },
+          "animatedTitleType": {
+            "type": "string",
+            "nullable": true,
+            "description": "Animated title type"
+          },
+          "animatedTitle": {
+            "type": "boolean",
+            "description": "Enable animated title"
+          },
+          "projectsMode": {
+            "type": "string",
+            "nullable": true,
+            "description": "Projects display mode"
+          },
+          "projectsTitle": {
+            "type": "string",
+            "nullable": true,
+            "description": "Projects section title"
+          },
+          "projectsDescription": {
+            "type": "string",
+            "nullable": true,
+            "description": "Projects section description"
+          },
+          "projectsCustomization": {
+            "type": "boolean",
+            "description": "Enable projects customization"
+          },
+          "projectsAccentColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Projects accent color"
+          },
+          "projectsTextColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Projects text color"
+          },
+          "projectsOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Projects opacity"
+          },
+          "projectsBorderCustomization": {
+            "type": "boolean",
+            "description": "Enable projects border customization"
+          },
+          "projectsBorderColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Projects border color"
+          },
+          "projectsBorderWidth": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Projects border width"
+          },
+          "projectsBorderRadius": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Projects border radius"
+          },
+          "projectsBorderOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Projects border opacity"
+          },
+          "skillsFrontend": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Frontend skills"
+          },
+          "skillsBackend": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Backend skills"
+          },
+          "skillsDatabase": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Database skills"
+          },
+          "skillsCore": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Core skills"
+          },
+          "skillsEnabled": {
+            "type": "boolean",
+            "description": "Enable skills section"
+          },
+          "skillsCustomization": {
+            "type": "boolean",
+            "description": "Enable skills customization"
+          },
+          "skillsAccentColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Skills accent color"
+          },
+          "skillsTextColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Skills text color"
+          },
+          "skillsOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Skills opacity"
+          },
+          "skillsBorderCustomization": {
+            "type": "boolean",
+            "description": "Enable skills border customization"
+          },
+          "skillsBorderColor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Skills border color"
+          },
+          "skillsBorderWidth": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Skills border width"
+          },
+          "skillsBorderRadius": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Skills border radius"
+          },
+          "skillsBorderOpacity": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Skills border opacity"
+          }
+        }
+      },
+      "Badge": {
+        "type": "object",
+        "required": [
+          "badgeId",
+          "enabled",
+          "obtainedAt"
+        ],
+        "properties": {
+          "badgeId": {
+            "type": "string",
+            "description": "Badge identifier"
+          },
+          "color": {
+            "type": "string",
+            "nullable": true,
+            "description": "Badge color override"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether badge is enabled"
+          },
+          "obtainedAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp when badge was obtained"
+          }
+        }
+      },
+      "CustomBadge": {
+        "type": "object",
+        "required": [
+          "badgeName",
+          "imageUrl",
+          "enabled"
+        ],
+        "properties": {
+          "badgeName": {
+            "type": "string",
+            "description": "Custom badge name"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Custom badge image URL"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether custom badge is enabled"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp when custom badge was created"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "required": [
+          "title",
+          "url",
+          "active"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Link title"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Link URL"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether link is active"
+          },
+          "color": {
+            "type": "string",
+            "nullable": true,
+            "description": "Link color override"
+          },
+          "clicks": {
+            "type": "integer",
+            "description": "Number of clicks on this link"
+          }
+        }
+      },
+      "Audio": {
+        "type": "object",
+        "required": [
+          "title",
+          "audioUrl",
+          "coverUrl",
+          "duration",
+          "active"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Audio track title"
+          },
+          "audioUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Audio file URL"
+          },
+          "coverUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Cover image URL"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Track duration in seconds"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether track is active"
+          },
+          "externalUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "External URL for the audio track (e.g., YouTube link)"
+          }
+        }
+      },
+      "Background": {
+        "type": "object",
+        "required": [
+          "id",
+          "backgroundUrl",
+          "active"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Background identifier"
+          },
+          "backgroundUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Background media URL"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether background is active"
+          }
+        }
+      },
+      "UserStats": {
+        "type": "object",
+        "properties": {
+          "views": {
+            "type": "integer",
+            "description": "Total views"
+          },
+          "badges": {
+            "type": "integer",
+            "description": "Total badges earned"
+          },
+          "rank": {
+            "type": "integer",
+            "description": "Overall rank"
+          }
+        }
+      },
+      "LeaderboardEntry": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "username",
+          "createdAt",
+          "views",
+          "badges"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "User UID"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "UNIX timestamp of account creation"
+          },
+          "views": {
+            "type": "integer",
+            "description": "Total profile views"
+          },
+          "badges": {
+            "type": "integer",
+            "description": "Total badges count"
+          }
+        }
+      },
+      "Error": {
+        "required": [
+          "error",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Error code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "details": {
+            "type": "string",
+            "description": "Additional error details"
+          }
+        }
+      },
+      "NotFoundError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "accountApiKey": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "key",
+        "description": "Your Account API key (found in your dashboard)"
+      },
+      "accountBearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Your Account API key passed as a Bearer token in the Authorization header"
+      },
+      "imagehostApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "key",
+        "description": "Your ImageHost API key (found in your dashboard). Only used for the upload endpoint."
+      }
+    }
+  }
+}
