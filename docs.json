@@ -3,9 +3,9 @@
   "theme": "almond",
   "name": "flare.best Documentation",
   "colors": {
-    "primary": "#7df1f0",
-    "light": "#7df1f0",
-    "dark": "#7df1f0"
+    "primary": "#38bbba",
+    "light": "#38bbba",
+    "dark": "#38bbba"
   },
   "banner": {
   "content": "⚠ This documentation may contain outdated content, as it is no longer being updated. Haunt V2 will release soon with new documentation. Stay tuned, and join our [Discord server](https://discord.gg/hauntbio) for updates.",
