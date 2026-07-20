@@ -92,5 +92,11 @@
       "discord": "https://discord.com/vat7jbJEHf",
       "github": "https://github.com/flare.best/docs"
     }
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "fonts": {
+    "family": "Geist"
   }
 }
