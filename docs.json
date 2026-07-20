@@ -3,9 +3,9 @@
   "theme": "almond",
   "name": "flare.best Documentation",
   "colors": {
-    "primary": "#49b1b1",
-    "light": "#49b1b1",
-    "dark": "#49b1b1"
+    "primary": "#507ad8",
+    "light": "#507ad8",
+    "dark": "#507ad8"
   },
   "banner": {
   "content": "⚠ This documentation may contain outdated content, as it is no longer being updated. Haunt V2 will release soon with new documentation. Stay tuned, and join our [Discord server](https://discord.gg/hauntbio) for updates.",
@@ -89,7 +89,7 @@
   },
   "footer": {
     "socials": {
-      "discord": "https://discord.com/7GH26medcr",
+      "discord": "https://discord.com/vat7jbJEHf",
       "github": "https://github.com/flare.best/docs"
     }
   }
